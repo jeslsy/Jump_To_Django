@@ -8,10 +8,12 @@ app_name = 'pybo'
 
 
 urlpatterns = [
-    path('', views.index),
+    path('', views.index, name = 'index'),
     # int: = question_id에 숫자가 매핑됨을 이야기함
     # URL 매핑에 detail이라는 이름 붙여주자^^!
     path('<int:question_id>/',views.detail, name = 'detail'),
     # answer_create라는 별명을 가진 answer/create/question_id 매핑을 answer_create 뷰 함수에 보냄
     path('answer/create/<int:question_id>/', views.answer_create, name = 'answer_create'),
+    path('question/create/', views.question_create, name='question_create'),
+    
 ]

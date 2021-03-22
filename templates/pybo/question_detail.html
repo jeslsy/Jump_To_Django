@@ -1,5 +1,8 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+<!-- 기본 틀 상속. -->
+{% extends 'base.html'%}
+
+<!-- 내용 시작 -->
+{% block content %}
 
 <!-- 전체 페이지 덩어리인듯 -->
 <div class="container my-3">
@@ -51,6 +54,22 @@
         <!-- 보안 검사 -->
         {% csrf_token %}
 
+
+        <!-- 에러 처리 -->
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+        {% for field in form %}
+            {% if field.errors %}
+            <strong>{{ field.label }}</strong>
+            {{ field.errors }}
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% endif %}
+
+
+
+
         <!-- textarea -->
         <div class="form-group">
             <textarea name="content" id="content" class="form-control" rows="10"></textarea>
@@ -60,3 +79,6 @@
         <input type="submit" value="답변등록" class="btn btn-primary">
     </form>
 </div>
+
+<!-- 내용 끝 -->
+{% endblock %}

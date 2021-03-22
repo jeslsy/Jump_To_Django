@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class = "container">
+    <h5 class = "my-3 border-bottom pb-2">질문 등록</h5>
+    <form method="post" class="post-form my-3">
+        {% csrf_token %}
+        <!--
+        question_create 함수에서 전달한 QuestionForm 객체
+        그래서 form.as_p이거 한줄만 있어도 입력 칸은 2개인것!    
+        -->
+
+        <!-- 오류 처리 -->
+        <!-- question_create에서 is_valid 부분 오류 났을 때-->
+        {% if form.errors %}
+            <div class = "alert alert-danger" role = "alert">
+            {% for field in form %}
+                {% if field.errors %}
+                <strong> {{field.label}} </strong>
+                {{field.errors}}
+                {% endif %}
+            {% endfor %}
+            </div>
+        {% endif %}
+        <!-- 오류 표시 end-->
+
+        <div class="form-group">
+            <label for="subject">제목</label>
+            <!--입력 값이 없으면 None이 표시되는데 ''이 공백으로 대체하려고 |default_if_none:'' 작성해줌.--> 
+            <input type="text" class="form-control" name="subject" id="subject"
+                   value="{{ form.subject.value|default_if_none:'' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea class="form-control" name="content"
+                      id="content" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">저장하기</button>
+    </form>
+</div>
+{% endblock %}
