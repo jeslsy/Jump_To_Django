@@ -31,6 +31,71 @@
         </tbody>
 
     </table>
+
+
+
+
+    <!-- 페이징처리 시작 -->
+    <ul class="pagination justify-content-center">
+        <!-- 이전페이지 -->
+        {% if question_list.has_previous %}
+        <!-- 페이지 있으면 링크 활성화됨-->
+        <li class="page-item">
+            <!-- 여기있는 question_list가 views.py에 있는 page.obj임. //context로 받아왔음-->
+            <!-- question_list.previous_page_number 이게 = page.obj.previous_page_number인것. -->
+            <a class="page-link" href="?page={{ question_list.previous_page_number }}">이전</a>
+        </li>
+        {% else %}
+        <!-- 페이지 없으면 링크 비활성화됨-->
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+        {% endif %}
+
+
+        <!-- 페이지 리스트-->>
+        <!-- 페이지 리스트 돌면서 해당 페이지로 이동할 수 있는 링크 생성-->
+        {% for page_number in question_list.paginator.page_range %}
+        <!-- 페이지 표시 제한 기능 구현-->
+        <!-- 현재 페이지 기준으로 앞뒤로 5만큼씩 보이게 함.-->
+        {% if page_number >= question_list.number|add:-5 and page_number <= question_list.number|add:5 %}
+            <!---->
+            {% if page_number == question_list.number %}
+            <!-- active클래스 = 강조 표시-->>
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+            {% endif %}
+
+        {% endif %}
+        {% endfor %}
+
+
+        <!-- 다음페이지 -->
+        {% if question_list.has_next %}
+        <!-- 페이지 있으면 링크 활성화됨-->
+        <li class="page-item">
+            <a class="page-link" href="?page={{ question_list.next_page_number }}">다음</a>
+        </li>
+        {% else %}
+        <!-- 페이지 업으면 링크 비활성화됨-->
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+    <!-- 페이징처리 끝 -->
+
+
+
+
+
+
+
 </div>
 
 <!-- 내용 끝 -->
