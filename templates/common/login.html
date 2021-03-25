@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<!-- 아이디 비번 입력받아 로그인하는 간단 html 코드-->
+<div class="container my-3">
+    <!-- 입력 + 전송 post -->
+    <form method="post" class="post-form" action="{% url 'common:login' %}">
+        
+        <!-- 보안 검사 -->
+        {% csrf_token %}
+
+        {% include "form_errors.html" %}
+
+        <!-- username과 password는 django.contrib.auth앱에서 요구하는 필수 항목.-->
+        <div class="form-group">
+            <label for="username">사용자ID</label>
+            <input type="text" class="form-control" name="username" id="username"
+                   value="{{ form.username.value|default_if_none:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" class="form-control" name="password" id="password"
+                   value="{{ form.password.value|default_if_none:'' }}">
+        </div>
+        <button type="submit" class="btn btn-primary">로그인</button>
+    </form>
+</div>
+{% endblock %}

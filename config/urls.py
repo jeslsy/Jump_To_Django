@@ -24,4 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # 이제부터 pybo/로 시작하는 페이지 요청은 모두 pybo/urls.py에서 관리
     path('pybo/', include('pybo.urls')),
+    path('common/', include('common.urls')),
 ]
