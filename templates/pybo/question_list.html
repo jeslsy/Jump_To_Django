@@ -1,4 +1,8 @@
+<!-- 고정 base 템플릿 가져오기 -->
 {% extends 'base.html' %}
+<!--templatetags가져오기-->
+{% load pybo_filter %}
+
 {% block content %}
 
 <div class="container my-3">
@@ -16,7 +20,10 @@
         {% if question_list %}
         {% for question in question_list %}
             <tr>
-                <td>{{ forloop.counter }}</td>
+                <td>
+                    {{question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1}}
+
+                </td>
                 <td>
                     <a href="{% url 'pybo:detail' question.id %}">{{question.subject}}</a>
                 </td>
