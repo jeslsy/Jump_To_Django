@@ -7,7 +7,6 @@
 
 <div class="container my-3">
     <table class="table">
-        <a href="{% url 'pybo:question_create' %}" class="btn btn-primary">질문 등록하기</a>
         <thead>
             <tr class = "thead-dark">
                 <th>번호</th>
@@ -21,11 +20,20 @@
         {% for question in question_list %}
             <tr>
                 <td>
+                    <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
                     {{question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1}}
 
                 </td>
                 <td>
+                    <!-- 상세 내용 페이지로 링크 연결-->
                     <a href="{% url 'pybo:detail' question.id %}">{{question.subject}}</a>
+
+                    <!--답변 개수 표시-->
+                    <!-- if 답변 있는 경우-->
+                    {% if question.answer_set.count > 0 %} 
+                    <span class = "text-danger small ml-2">{{ question.answer_set.count}}</span>
+                    {% endif %}
+
                 </td>
                 <td>{{ question.create_date }}</td>
             </tr>
@@ -94,15 +102,15 @@
             <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
         </li>
         {% endif %}
+
+        
     </ul>
-    <!-- 페이징처리 끝 -->
-
-
-
-
-
-
-
+    
+    <div style="float:right">
+        <!-- 페이징처리 끝 -->
+        <a href="{% url 'pybo:question_create' %}" class="btn btn-primary">질문 등록하기</a>
+    </div>
+    
 </div>
 
 <!-- 내용 끝 -->
