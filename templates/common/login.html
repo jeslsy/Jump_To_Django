@@ -1,16 +1,12 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 
 <!-- 아이디 비번 입력받아 로그인하는 간단 html 코드-->
 <div class="container my-3">
     <!-- 입력 + 전송 post -->
     <form method="post" class="post-form" action="{% url 'common:login' %}">
-        
-        <!-- 보안 검사 -->
+         <!-- 보안 검사 -->
         {% csrf_token %}
-
         {% include "form_errors.html" %}
 
         <!-- username과 password는 django.contrib.auth앱에서 요구하는 필수 항목.-->

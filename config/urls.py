@@ -17,7 +17,7 @@ from django.contrib import admin
 # include = pybo.urls사용할 수 있게 해줌.
 from django.urls import path, include
 ## pybo 앱의 views 폴더 기능들 가져와 씀.
-#from pybo import views
+from pybo import views
 
 
 urlpatterns = [
@@ -25,4 +25,5 @@ urlpatterns = [
     # 이제부터 pybo/로 시작하는 페이지 요청은 모두 pybo/urls.py에서 관리
     path('pybo/', include('pybo.urls')),
     path('common/', include('common.urls')),
+    path('', views.index, name='index'),
 ]
