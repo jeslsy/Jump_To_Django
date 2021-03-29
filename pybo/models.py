@@ -16,8 +16,13 @@ class Question(models.Model):
     # 계정 삭제되면 계정과 연결된 Question 모델 데이터를 모두 삭제!
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     
+    # 수정일시.
+    # null = True : null 허용, blanck=True : form.is_valid()를 통한 입력 폼 데이터 검사 시 없어도 됨.
+    modify_date = models.DateTimeField(null=True, blank=True)
+    
     def __str__(self):
         return self.subject
+
 
 
 class Answer(models.Model):

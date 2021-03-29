@@ -7,6 +7,20 @@
 <!-- 전체 페이지 덩어리인듯 -->
 <div class="container my-3">
 
+
+    <!-- 사용자오류 표시 -->
+    {% if messages %}
+    <div class="alert alert-danger my-3" role="alert">
+    {% for message in messages %}
+        <strong>{{ message.tags }}</strong>
+        <ul><li>{{ message.message }}</li></ul>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+
+
+
     <!-- 질문 제목 = 상하 패딩값 2, h2 크기로 -->
     <h2 class="border-bottom py-2">{{ question.subject }}</h2>
 
@@ -18,11 +32,39 @@
             <div class="card-text" style="white-space: pre-line;">{{ question.content }}</div>
             <div class="d-flex justify-content-end">
 
+
+                <!-- 질문 수정 일시 출력-->
+                {% if question.modify_date %}
+                <div class="badge badge-light p-2 text-left mx-3">
+                    <div class="mb-2">modified at</div>
+                    <div>{{ question.modify_date }}</div>
+                </div>
+                {% endif %}
+
+
+
                 <!-- 상하좌우 패딩값2로 작성 일자 표시-->
-                <div class="badge badge-light p-2">
-                    {{ question.create_date }}
+                <div class="badge badge-light p-2 text-left">
+                    <div class="mb-2">{{ question.author.username }}</div>  <!-- 글쓴이 추가 -->
+                    <div>{{ question.create_date }}</div> 
                 </div>
             </div>
+
+            <!-- 수정 버튼. -->
+            {% if request.user == question.author %}
+            <div class="my-3">
+
+                <a href="{% url 'pybo:question_modify' question.id  %}" 
+                   class="btn btn-sm btn-outline-secondary">수정</a>
+
+                <!-- class = delete -> 삭제 버튼 눌리는 이벤트 확인용.-->
+                <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                    data-uri="{% url 'pybo:question_delete' question.id  %}">삭제</a>   
+
+            </div>
+            {% endif %}
+
+
         </div>
     </div>
 
@@ -39,11 +81,35 @@
             <div class="card-text" style="white-space: pre-line;">{{ answer.content }}</div>
             <div class="d-flex justify-content-end">
 
+
+                <!-- 답변 수정 일시 출력.-->
+                {% if answer.modify_date %}
+                <div class="badge badge-light p-2 text-left mx-3">
+                    <div class="mb-2">modified at</div>
+                    <div>{{ answer.modify_date }}</div>
+                </div>
+                {% endif %}
+
+
+
                 <!-- 상하좌우 패딩값2로 작성 일자 표시-->
                 <div class="badge badge-light p-2">
                     {{ answer.create_date }}
                 </div>
             </div>
+
+            <!-- 글쓴이와 사용자가 같으면 수정 버튼 노출.-->
+            {% if request.user == answer.author %}
+            <div class="my-3">
+
+                <a href="{% url 'pybo:answer_modify' answer.id  %}" 
+                    class="btn btn-sm btn-outline-secondary">수정</a>
+                <a href="#" class="delete btn btn-sm btn-outline-secondary " 
+                    data-uri="{% url 'pybo:answer_delete' answer.id  %}">삭제</a>
+            </div>
+
+            {% endif %}
+
         </div>
     </div>
     {% endfor %}
@@ -82,4 +148,19 @@
 </div>
 
 <!-- 내용 끝 -->
+{% endblock %}
+
+
+
+
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".delete").on('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = $(this).data('uri');
+        }
+    });
+});
+</script>
 {% endblock %}
