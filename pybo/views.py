@@ -7,6 +7,8 @@ from django.utils import timezone
 from .forms import QuestionForm, AnswerForm
 # 페이징 기능 
 from django.core.paginator import Paginator
+# 로그인 정보가 필요한 함수를 위한것.
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -30,9 +32,6 @@ def index(request):
     return render(request, 'pybo/question_list.html', context)
 
 
-
-
-
 def detail(request, question_id):
     # 넘어온 id에 해당하는 질문 데이터 베이스 question에 저장
     question = get_object_or_404(Question, pk = question_id)
@@ -44,6 +43,7 @@ def detail(request, question_id):
 
 # question_id = URL 매핑 정보값 //2
 # request = textarea에 작성한 form 데이터
+@login_required(login_url='common:login')
 def answer_create(request, question_id):
     """
     pybo 답변 등록
@@ -66,7 +66,7 @@ def answer_create(request, question_id):
 # answer = Answer(question=question, content=request.POST.get('content'), create_
 # date=timezone.now())
 # answer.save()
-
+@login_required(login_url='common:login')
 def question_create(request):
     """
     pybo 질문 등록 & 저장
@@ -79,6 +79,8 @@ def question_create(request):
         if form.is_valid():
             # 임시저장하고 (아직 submit, content만 있기 때문)
             question = form.save(commit=False)
+            # author(글쓴이) = user()
+            question.author = request.user
             # 작성 시간 필드 채워주고
             question.create_date = timezone.now()
             # 진짜 저장

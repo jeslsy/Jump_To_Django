@@ -72,7 +72,8 @@
 
         <!-- textarea -->
         <div class="form-group">
-            <textarea name="content" id="content" class="form-control" rows="10"></textarea>
+            <textarea {% if not user.is_authenticated %}disabled{% endif %}
+                name="content" id="content" class="form-control" rows="10"></textarea>
         </div>
 
         <!-- 전송 버튼 -->

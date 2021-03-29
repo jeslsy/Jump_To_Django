@@ -4,13 +4,14 @@
 {% load pybo_filter %}
 
 {% block content %}
-
 <div class="container my-3">
+    <!-- question list 출력 -->>
     <table class="table">
         <thead>
-            <tr class = "thead-dark">
+            <tr class = "text-center thead-dark">
                 <th>번호</th>
-                <th>제목</th>
+                <th style="width:50%">제목</th>
+                <th>글쓴이</th>
                 <th>작성일시</th>
             </tr>
         </thead>
@@ -18,13 +19,13 @@
         <tbody>
         {% if question_list %}
         {% for question in question_list %}
-            <tr>
+            <tr class="text-center">
                 <td>
                     <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
                     {{question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1}}
 
                 </td>
-                <td>
+                <td  class="text-left">
                     <!-- 상세 내용 페이지로 링크 연결-->
                     <a href="{% url 'pybo:detail' question.id %}">{{question.subject}}</a>
 
@@ -35,6 +36,7 @@
                     {% endif %}
 
                 </td>
+                <td>{{ question.author.username }}</td>  <!-- 글쓴이 추가 -->
                 <td>{{ question.create_date }}</td>
             </tr>
         {% endfor %}
