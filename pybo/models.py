@@ -14,11 +14,17 @@ class Question(models.Model):
     create_date = models.DateTimeField()
 
     # 계정 삭제되면 계정과 연결된 Question 모델 데이터를 모두 삭제!
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_question')
     
     # 수정일시.
     # null = True : null 허용, blanck=True : form.is_valid()를 통한 입력 폼 데이터 검사 시 없어도 됨.
     modify_date = models.DateTimeField(null=True, blank=True)
+    
+    
+    # voter 추가
+    # 장고는 다대다 관계 지원함.
+    voter = models.ManyToManyField(User, related_name='voter_question')  
+    
     
     def __str__(self):
         return self.subject
@@ -35,7 +41,9 @@ class Answer(models.Model):
     # 답변 작성 일시
     create_date = models.DateTimeField()
     
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_answer')
+    
+    voter = models.ManyToManyField(User, related_name='voter_answer')
 
     
 

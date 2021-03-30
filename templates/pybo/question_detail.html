@@ -20,89 +20,104 @@
     {% endif %}
 
 
-
-
-
     <!-- 질문 제목 = 상하 패딩값 2, h2 크기로 -->
     <h2 class="border-bottom py-2">{{ question.subject }}</h2>
 
-    <!-- card\상자\ 상하 마진값 2-->
-    <div class="card my-2">
-        <div class="card-body">
 
 
-            <!-- 질문 제목 아래 선 -> 줄바꿈하고 내용인듯? -->
-            <div class="card-text" style="white-space: pre-line;">{{ question.content }}</div>
-            <div class="d-flex justify-content-end">
+
+    <div class="row my-3">
+        <div class="col-1"> <!-- 추천영역 -->
+            <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{question.voter.count}}</div>
+            <a href="#" data-uri="{% url 'pybo:vote_question' question.id  %}"
+               class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+        </div>
+        <div class="col-11"> <!-- 질문영역 -->
+
+            <!-- card\상자\ 상하 마진값 2-->
+            <div class="card">
+                <div class="card-body">
 
 
-                <!-- 질문 수정 일시 출력-->
-                {% if question.modify_date %}
-                <div class="badge badge-light p-2 text-left mx-3">
-                    <div class="mb-2">modified at</div>
-                    <div>{{ question.modify_date }}</div>
+                    <!-- 질문 제목 아래 선 -> 줄바꿈하고 내용인듯? -->
+                    <div class="card-text" style="white-space: pre-line;">{{ question.content }}</div>
+                    <div class="d-flex justify-content-end">
+
+
+                    <!-- 질문 수정 일시 출력-->
+                    {% if question.modify_date %}
+                    <div class="badge badge-light p-2 text-left mx-3">
+                        <div class="mb-2">modified at</div>
+                        <div>{{ question.modify_date }}</div>
+                    </div>
+                    {% endif %}
+
+
+
+                    <!-- 상하좌우 패딩값2로 작성 일자 표시-->
+                    <div class="badge badge-light p-2 text-left">
+                        <div class="mb-2">{{ question.author.username }}</div>  <!-- 글쓴이 추가 -->
+                        <div>{{ question.create_date }}</div> 
+                    </div>
+                </div>
+
+
+                <!-- 수정 버튼. -->
+                {% if request.user == question.author %}
+                <div class="my-3">
+
+                    <a href="{% url 'pybo:question_modify' question.id  %}" 
+                        class="btn btn-sm btn-outline-secondary">수정</a>
+
+                    <!-- class = delete -> 삭제 버튼 눌리는 이벤트 확인용.-->
+                    <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                        data-uri="{% url 'pybo:question_delete' question.id  %}">삭제</a>   
+
                 </div>
                 {% endif %}
 
 
-
-                <!-- 상하좌우 패딩값2로 작성 일자 표시-->
-                <div class="badge badge-light p-2 text-left">
-                    <div class="mb-2">{{ question.author.username }}</div>  <!-- 글쓴이 추가 -->
-                    <div>{{ question.create_date }}</div> 
-                </div>
-            </div>
-
-
-            <!-- 수정 버튼. -->
-            {% if request.user == question.author %}
-            <div class="my-3">
-
-                <a href="{% url 'pybo:question_modify' question.id  %}" 
-                   class="btn btn-sm btn-outline-secondary">수정</a>
-
-                <!-- class = delete -> 삭제 버튼 눌리는 이벤트 확인용.-->
-                <a href="#" class="delete btn btn-sm btn-outline-secondary"
-                    data-uri="{% url 'pybo:question_delete' question.id  %}">삭제</a>   
-
-            </div>
-            {% endif %}
-
-
             
 
-            <!-- 질문 댓글 Start -->
-            {% if question.comment_set.count > 0 %}
-            <div class="mt-3">
-            {% for comment in question.comment_set.all %}
-                <!-- 글씨 작게 -->
-                <div class="comment py-2 text-muted">
-                    <span style="white-space: pre-line;">{{ comment.content }}</span>
-                    <span>
-                        - {{ comment.author }}, {{ comment.create_date }}
-                        {% if comment.modify_date %}
-                        (수정:{{ comment.modify_date }})
+                <!-- 질문 댓글 Start -->
+                {% if question.comment_set.count > 0 %}
+                <div class="mt-3">
+                {% for comment in question.comment_set.all %}
+                    <!-- 글씨 작게 -->
+                    <div class="comment py-2 text-muted">
+                        <span style="white-space: pre-line;">{{ comment.content }}</span>
+                        <span>
+                            - {{ comment.author }}, {{ comment.create_date }}
+                            {% if comment.modify_date %}
+                            (수정:{{ comment.modify_date }})
+                            {% endif %}
+                        </span>
+                        {% if request.user == comment.author %}
+                        <a href="{% url 'pybo:comment_modify_question' comment.id  %}" class="small">수정</a>,
+                        <a href="#" class="small delete" 
+                        data-uri="{% url 'pybo:comment_delete_question' comment.id  %}">삭제</a>
                         {% endif %}
-                    </span>
-                    {% if request.user == comment.author %}
-                    <a href="{% url 'pybo:comment_modify_question' comment.id  %}" class="small">수정</a>,
-                    <a href="#" class="small delete" 
-                    data-uri="{% url 'pybo:comment_delete_question' comment.id  %}">삭제</a>
-                    {% endif %}
+                    </div>
+                {% endfor %}
                 </div>
-            {% endfor %}
-            </div>
-            {% endif %}
-            <div>
-                <a href="{% url 'pybo:comment_create_question' question.id  %}" 
-                class="small"><small>댓글 추가 ..</small></a>
-            </div>
-            <!-- 질문 댓글 End -->
+                {% endif %}
+                <div>
+                    <a href="{% url 'pybo:comment_create_question' question.id  %}" 
+                    class="small"><small>댓글 추가 ..</small></a>
+                </div>
+                <!-- 질문 댓글 End -->
 
 
 
         </div>
     </div>
+
+
+
+
+
+
+    
 
     <!-- count개의 답변이 있습니다 = 상하 마진3, 상하 패딩2-->
     <h5 class="border-bottom my-3 py-2">{{question.answer_set.count}}개의 답변이 있습니다.</h5>
@@ -110,76 +125,93 @@
     <!-- 데이터베이스 답변리스트 모두 출력-->
     {% for answer in question.answer_set.all %}
 
-    <!-- 마진 2로 card\상자\ -->
-    <div class="card my-2">
-        <div class="card-body">
-            <!-- 줄하나 그어주고 내용나옴--> 
-            <div class="card-text" style="white-space: pre-line;">{{ answer.content }}</div>
-            <div class="d-flex justify-content-end">
 
 
-                <!-- 답변 수정 일시 출력.-->
-                {% if answer.modify_date %}
-                <div class="badge badge-light p-2 text-left mx-3">
-                    <div class="mb-2">modified at</div>
-                    <div>{{ answer.modify_date }}</div>
-                </div>
-                {% endif %}
+    <div class="row my-3">
+        <div class="col-1">  <!-- 추천영역 -->
+            <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{answer.voter.count}}</div>
+            <a href="#" data-uri="{% url 'pybo:vote_answer' answer.id  %}" 
+                class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+        </div>
+        <div class="col-11">  <!-- 답변영역 -->
 
 
-
-                <!-- 상하좌우 패딩값2로 작성 일자 표시-->
-                <div class="badge badge-light p-2">
-                    {{ answer.create_date }}
-                </div>
-            </div>
-
-            <!-- 글쓴이와 사용자가 같으면 수정 버튼 노출.-->
-            {% if request.user == answer.author %}
-            <div class="my-3">
-
-                <a href="{% url 'pybo:answer_modify' answer.id  %}" 
-                    class="btn btn-sm btn-outline-secondary">수정</a>
-                <a href="#" class="delete btn btn-sm btn-outline-secondary " 
-                    data-uri="{% url 'pybo:answer_delete' answer.id  %}">삭제</a>
-            </div>
-
-            {% endif %}
+            
+            <!-- 마진 2로 card\상자\ -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- 줄하나 그어주고 내용나옴--> 
+                    <div class="card-text" style="white-space: pre-line;">{{ answer.content }}</div>
+                    <div class="d-flex justify-content-end">
 
 
-
-            <!-- 답변 댓글 추가 시작 -->>
-            {% if answer.comment_set.count > 0 %}
-            <div class="mt-3">
-            {% for comment in answer.comment_set.all %}
-                <div class="comment py-2 text-muted">
-                    <span style="white-space: pre-line;">{{ comment.content }}</span>
-                    <span>
-                        - {{ comment.author }}, {{ comment.create_date }}
-                        {% if comment.modify_date %}
-                        (수정:{{ comment.modify_date }})
+                        <!-- 답변 수정 일시 출력.-->
+                        {% if answer.modify_date %}
+                        <div class="badge badge-light p-2 text-left mx-3">
+                            <div class="mb-2">modified at</div>
+                            <div>{{ answer.modify_date }}</div>
+                        </div>
                         {% endif %}
-                    </span>
-                    {% if request.user == comment.author %}
-                    <a href="{% url 'pybo:comment_modify_answer' comment.id  %}" class="small">수정</a>,
-                    <a href="#" class="small delete" 
-                       data-uri="{% url 'pybo:comment_delete_answer' comment.id  %}">삭제</a>
+
+
+
+                        <!-- 상하좌우 패딩값2로 작성 일자 표시-->
+                        <div class="badge badge-light p-2">
+                            {{ answer.create_date }}
+                        </div>
+                    </div>
+
+                    <!-- 글쓴이와 사용자가 같으면 수정 버튼 노출.-->
+                    {% if request.user == answer.author %}
+                    <div class="my-3">
+
+                        <a href="{% url 'pybo:answer_modify' answer.id  %}" 
+                            class="btn btn-sm btn-outline-secondary">수정</a>
+                        <a href="#" class="delete btn btn-sm btn-outline-secondary " 
+                            data-uri="{% url 'pybo:answer_delete' answer.id  %}">삭제</a>
+                    </div>
+
                     {% endif %}
+
+
+
+                    <!-- 답변 댓글 추가 시작 -->>
+                    {% if answer.comment_set.count > 0 %}
+                    <div class="mt-3">
+                    {% for comment in answer.comment_set.all %}
+                        <div class="comment py-2 text-muted">
+                            <span style="white-space: pre-line;">{{ comment.content }}</span>
+                            <span>
+                                - {{ comment.author }}, {{ comment.create_date }}
+                                {% if comment.modify_date %}
+                                (수정:{{ comment.modify_date }})
+                                {% endif %}
+                            </span>
+                            {% if request.user == comment.author %}
+                            <a href="{% url 'pybo:comment_modify_answer' comment.id  %}" class="small">수정</a>,
+                            <a href="#" class="small delete" 
+                            data-uri="{% url 'pybo:comment_delete_answer' comment.id  %}">삭제</a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <a href="{% url 'pybo:comment_create_answer' answer.id  %}" 
+                        class="small"><small>댓글 추가 ..</small></a>
+                    </div>
+
+
                 </div>
-            {% endfor %}
             </div>
-            {% endif %}
-            <div>
-                <a href="{% url 'pybo:comment_create_answer' answer.id  %}" 
-                   class="small"><small>댓글 추가 ..</small></a>
-            </div>
-
-
-
 
         </div>
     </div>
     {% endfor %}
+
+
+
+
 
     <!-- 새 답변 작성하고 url에 id랑 같이 post방식으로 전송-->
     <form action="{% url 'pybo:answer_create' question.id %}" method="post" class="my-3">
@@ -228,6 +260,15 @@ $(document).ready(function(){
             location.href = $(this).data('uri');
         }
     });
+
+    // 추천 버튼에 class = "recommend" 적용 됐으니 제이쿼리 이용
+    // 확ㅇ니 창에서 확인 누르면 data-uri 속성으로 URL 호출됨.
+    $(".recommend").on('click', function() {
+        if(confirm("정말로 추천하시겠습니까?")) {
+            location.href = $(this).data('uri');
+        }
+    });
+
 });
 </script>
 {% endblock %}

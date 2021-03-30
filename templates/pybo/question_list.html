@@ -10,6 +10,8 @@
         <thead>
             <tr class = "text-center thead-dark">
                 <th>번호</th>
+                <th>추천</th>
+
                 <th style="width:50%">제목</th>
                 <th>글쓴이</th>
                 <th>작성일시</th>
@@ -25,6 +27,19 @@
                     {{question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1}}
 
                 </td>
+
+
+                <!-- 추천 개수 표시.-->
+                <td>
+                    {% if question.voter.all.count > 0 %}
+                    <span class="badge badge-warning px-2 py-1">{{ question.voter.all.count }}</span>
+                    {% endif %}
+                </td>
+
+
+
+
+
                 <td  class="text-left">
                     <!-- 상세 내용 페이지로 링크 연결-->
                     <a href="{% url 'pybo:detail' question.id %}">{{question.subject}}</a>
