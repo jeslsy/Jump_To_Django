@@ -1,4 +1,10 @@
+import markdown
+from django.utils.safestring import mark_safe
+"""
+위 두개로 문자열을 HTML코드로 변환
+"""
 from django import template
+
 
 register = template.Library()
 
@@ -8,3 +14,10 @@ register = template.Library()
 # value = 기존값, arg = 입력 받은 값.
 def sub(value, arg):
     return value - arg
+
+
+@register.filter()
+def mark(value):
+    # 확장 도구
+    extensions = ["nl2br", "fenced_code"]
+    return mark_safe(markdown.markdown(value, extensions=extensions))
