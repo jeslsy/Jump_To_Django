@@ -4,7 +4,7 @@ from pybo.models import Answer, Comment, Question
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
-
+from django.shortcuts import render, get_object_or_404, redirect, resolve_url
 
 @login_required(login_url='common:login')
 def comment_create_question(request, question_id):
@@ -20,7 +20,9 @@ def comment_create_question(request, question_id):
             comment.create_date = timezone.now()
             comment.question = question
             comment.save()
-            return redirect('pybo:detail', question_id=question.id)
+            #return redirect('pybo:detail', question_id=question.id)
+            return redirect('{}#comment_{}'.format(
+                resolve_url('pybo:detail', question_id=comment.question.id), comment.id))
     else:
         form = CommentForm()
     context = {'form': form}
@@ -46,11 +48,15 @@ def comment_modify_question(request, comment_id):
             comment.author = request.user
             comment.modify_date = timezone.now()
             comment.save()
-            return redirect('pybo:detail', question_id=comment.question.id)
+            # return redirect('pybo:detail', question_id=comment.question.id)
+            return redirect('{}#comment_{}'.format(
+                resolve_url('pybo:detail', question_id=comment.question.id), comment.id))
     else:
         form = CommentForm(instance=comment)
     context = {'form': form}
     return render(request, 'pybo/comment_form.html', context)
+
+
 
 
 @login_required(login_url='common:login')
@@ -61,14 +67,11 @@ def comment_delete_question(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     if request.user != comment.author:
         messages.error(request, '댓글삭제권한이 없습니다')
-        return redirect('pybo:detail', question_id=comment.question.id)
+        return redirect('{}#comment_{}'.format(
+                resolve_url('pybo:detail', question_id=comment.answer.question.id), comment.id))
     else:
         comment.delete()
     return redirect('pybo:detail', question_id=comment.question.id)
-
-
-
-
 
 
 
@@ -87,11 +90,14 @@ def comment_create_answer(request, answer_id):
             comment.create_date = timezone.now()
             comment.answer = answer
             comment.save()
-            return redirect('pybo:detail', question_id=comment.answer.question.id)
+            # return redirect('pybo:detail', question_id=comment.answer.question.id)
+            return redirect('{}#comment_{}'.format(
+                resolve_url('pybo:detail', question_id=comment.answer.question.id), comment.id))
     else:
         form = CommentForm()
     context = {'form': form}
     return render(request, 'pybo/comment_form.html', context)
+
 
 
 @login_required(login_url='common:login')
@@ -116,6 +122,8 @@ def comment_modify_answer(request, comment_id):
         form = CommentForm(instance=comment)
     context = {'form': form}
     return render(request, 'pybo/comment_form.html', context)
+
+
 
 
 @login_required(login_url='common:login')

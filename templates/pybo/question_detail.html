@@ -83,6 +83,7 @@
                 {% if question.comment_set.count > 0 %}
                 <div class="mt-3">
                 {% for comment in question.comment_set.all %}
+                    <a name="comment_{{ comment.id }}"></a>
                     <!-- 글씨 작게 -->
                     <div class="comment py-2 text-muted">
                         <span style="white-space: pre-line;">{{ comment.content }}</span>
@@ -125,7 +126,8 @@
     <!-- 데이터베이스 답변리스트 모두 출력-->
     {% for answer in question.answer_set.all %}
 
-
+    <!-- 답변 등록하거나 수정할 때 1단계에서 지정한 앵커 엘리먼트로 이동하게 해줌.-->
+    <a name="answer_{{ answer.id }}"></a>
 
     <div class="row my-3">
         <div class="col-1">  <!-- 추천영역 -->
@@ -179,6 +181,7 @@
                     {% if answer.comment_set.count > 0 %}
                     <div class="mt-3">
                     {% for comment in answer.comment_set.all %}
+                        <a name="comment_{{ comment.id }}"></a>
                         <div class="comment py-2 text-muted">
                             <span style="white-space: pre-line;">{{ comment.content }}</span>
                             <span>

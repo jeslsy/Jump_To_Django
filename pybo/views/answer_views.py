@@ -4,7 +4,7 @@ from django.utils import timezone
 from pybo.forms import AnswerForm
 from django.contrib.auth.decorators import login_required
 from pybo.models import Answer, Question
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render, resolve_url
 from django.contrib import messages
 
 
@@ -24,7 +24,11 @@ def answer_create(request, question_id):
             answer.create_date = timezone.now()
             answer.question = question
             answer.save()
-            return redirect('pybo:detail', question_id = question.id)
+            # 앵커 없을 때 (스크롤 관리 위함)
+            #return redirect('pybo:detail', question_id = question.id)
+            # 앵커로 redirect 구성할때 
+            return redirect('{}#answer_{}'.format(
+                resolve_url('pybo:detail', question_id=question.id), answer.id))
         
     # GET방식이면 입력창 반환
     else:
@@ -54,7 +58,10 @@ def answer_modify(request, answer_id):
             answer.author = request.user
             answer.modify_date = timezone.now()
             answer.save()
-            return redirect('pybo:detail', question_id=answer.question.id)
+            #return redirect('pybo:detail', question_id=answer.question.id)
+            # 앵커로 redirect 구성할때 
+            return redirect('{}#answer_{}'.format(
+                resolve_url('pybo:detail', question_id=answer.question.id), answer.id))
     else:
         form = AnswerForm(instance=answer)
     context = {'answer': answer, 'form': form}
