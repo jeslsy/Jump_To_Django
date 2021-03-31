@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render
 from pybo.models import Question
 from django.core.paginator import Paginator
 # 검색기능에 사용함.
-from django.db.models import Q
+from django.db.models import Q, Count
 
 def index(request):
     """
@@ -14,8 +14,18 @@ def index(request):
     page = request.GET.get('page','1') # 페이지
     kw = request.GET.get('kw', '')  # 검색어
     
-    # 조회
-    question_list = Question.objects.order_by('-create_date')
+    so = request.GET.get('so', 'recent')  # 정렬기준
+
+    # 정렬
+    if so == 'recommend':
+        question_list = Question.objects.annotate(num_voter=Count('voter')).order_by('-num_voter', '-create_date')
+    elif so == 'popular':
+        question_list = Question.objects.annotate(num_answer=Count('answer')).order_by('-num_answer', '-create_date')
+    else:  # recent
+        question_list = Question.objects.order_by('-create_date')
+        
+        
+
     if kw:
         question_list = question_list.filter(
             # kw 문자 포함되었는지 확인.
@@ -37,7 +47,7 @@ def index(request):
     
     # question_list를 템플릿에 전달
     # 입력 받은 page와 kw값을 템플릿 searchForm에 전달 위해 context안에 page와 kw로 넣어줌.
-    context = {'question_list': page_obj, 'page': page, 'kw': kw}  # page와 kw가 추가되었다.
+    context = {'question_list': page_obj, 'page': page, 'kw': kw, 'so': so}  # <------ so 추가
     return render(request, 'pybo/question_list.html', context)
 
 

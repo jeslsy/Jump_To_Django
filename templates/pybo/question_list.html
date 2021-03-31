@@ -7,7 +7,18 @@
 <div class="container my-3">
 
     <!-- 검색 창 -->
-    <div class="row justify-content-end my-3">
+    <div class="row justify-content-between my-3">      <!-- 양쪽정렬 justify-content-between로 변경 -->
+
+        <div class="col-2">
+            <select class="form-control so">
+                <option value="recent" {% if so == 'recent' %}selected{% endif %}>최신순</option>
+                <option value="recommend" {% if so == 'recommend' %}selected{% endif %}>추천순</option>
+                <option value="popular" {% if so == 'popular' %}selected{% endif %}>인기순</option>
+            </select>
+        </div>
+
+
+
         <div class="col-4 input-group">
             <!-- 비어있어도 괜츈!-->
             <input type="text" class="form-control kw" value="{{ kw|default_if_none:'' }}">
@@ -149,6 +160,7 @@
 <form id="searchForm" method="get" action="{% url 'index' %}">
     <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
     <input type="hidden" id="page" name="page" value="{{ page }}">
+    <input type="hidden" id="so" name="so" value="{{ so }}">
 </form>
 
 <!-- 내용 끝 -->
@@ -177,6 +189,13 @@ $(document).ready(function(){
         // 조회`요청` 한다.  
         $("#searchForm").submit();
     });
+
+    $(".so").on('change', function() {
+        $("#so").val($(this).val());
+        $("#page").val(1);
+        $("#searchForm").submit();
+    });
+    
 });
 </script>
 {% endblock %}
