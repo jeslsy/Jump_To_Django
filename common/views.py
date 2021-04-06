@@ -27,3 +27,11 @@ def signup(request):
         # 입력창 보여주기
         form = UserForm()
     return render(request, 'common/signup.html', {'form': form})
+
+
+
+def page_not_found(request, exception):
+    """
+    404 Page not found
+    """
+    return render(request, 'common/404.html', {})
