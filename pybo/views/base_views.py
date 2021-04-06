@@ -4,9 +4,12 @@ from pybo.models import Question
 from django.core.paginator import Paginator
 # 검색기능에 사용함.
 from django.db.models import Q, Count
+import logging
+logger = logging.getLogger('pybo')
 
 def index(request):
     3/0
+    logger.info("INFO 레벨로 출력")
     """
     pybo 목록 출력
     """
